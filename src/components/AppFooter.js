@@ -1,4 +1,4 @@
-import './style.css';
+import './AppFooter.css';
 
 function AppFooter({
   height
