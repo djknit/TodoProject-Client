@@ -1,25 +1,33 @@
-import logo from './logo.svg';
+import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import './App.css';
+import AppFooter from './components/AppFooter';
+import CreateAccount from './views/CreateAccount';
+import LandingPage from './views/LandingPage';
+import TodosPage from './views/TodosPage';
+import UpdateAccount from './views/UpdateAccount';
+
+
+const FOOTER_HEIGHT = '3rem';
+const CONTAINER_STYLE = { minHeight: `calc(100vh - ${FOOTER_HEIGHT})` };
+
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <>
+      <div className="App container" style={CONTAINER_STYLE}>
+        <Router>
+          <Switch>
+            <Route exact path="/" component={LandingPage} />
+            <Route path="/new-user" component={CreateAccount} />
+            <Route path="/todos" component={TodosPage} />
+            <Route path="/edit-account" component={UpdateAccount} />
+          </Switch>
+        </Router>
+      </div>
+      <AppFooter height={FOOTER_HEIGHT} />
+    </>
   );
 }
+
 
 export default App;

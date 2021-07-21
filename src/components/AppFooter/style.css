@@ -1,0 +1,23 @@
+#app-footer {
+  background-color: #dddddd;
+  color: #505050;
+  font-size: 1.1rem;
+}
+
+#app-footer .container {
+  height: 100%;
+  text-align: right;
+}
+
+#app-footer a {
+  color: #888;
+  text-decoration: none;
+}
+#app-footer a:hover {
+  color: #505050;
+  text-decoration: underline;
+}
+#app-footer a:active,
+#app-footer a:focus {
+  color: #707070;
+}
