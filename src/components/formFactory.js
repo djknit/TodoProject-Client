@@ -4,6 +4,7 @@ import React, { useState } from "react";
 function formFactory({ inputs, title, handleSubmit, formName }) {
 
   const [ state, setState ] = useState(getInitialState(inputs));
+  const [ problemMessages, setProblemMessages ] = useState([]);
 
   const onSubmit = event => {
     event.preventDefault();
@@ -26,13 +27,24 @@ function Form({
   onSubmit,
   formName,
   state,
-  setState
+  setState,
+  problemMessages
 }) {
 
   return (
     <form id={formName} onSubmit={onSubmit}>
       {title && (
         <h2>{title}</h2>
+      )}
+      {(problemMessages && problemMessages.length > 0 ) && (
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+          {problemMessages.map(message => (
+            <p key={message}>{message}</p>
+          ))}
+          <button type="button" className="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
       )}
       {inputs.map(
         ({ name, type, label, placeholder }) => (
