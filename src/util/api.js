@@ -9,11 +9,9 @@ import axios from 'axios';
 
 // need authentication route, a place to keep the JWT, and authentication header or generic request using the header
 
-const apiAxios = axios.create({ baseURL: '/api/' });
-
 const userApi = {
   login() {
-
+    
   },
   createUser() {
 
@@ -26,6 +24,11 @@ const userApi = {
   },
 };
 
+
+const JWT_PROP_NAME = 'user_token';
 function storeJwt(jwt) {
-  window.sessionStorage.setItem('t', jwt);
+  window.sessionStorage.setItem(JWT_PROP_NAME, jwt);
+}
+function getAuthHeader() {
+  return { Authorization: window.sessionStorage.getItem(JWT_PROP_NAME) };
 }
