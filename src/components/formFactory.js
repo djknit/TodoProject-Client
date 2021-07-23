@@ -3,19 +3,16 @@ import React, { useState } from "react";
 
 function formFactory({ inputs, title, handleSubmit, formName }) {
 
-  const [ state, setState ] = useState(getInitialState(inputs));
-  const [ problemMessages, setProblemMessages ] = useState([]);
-
   const onSubmit = event => {
     event.preventDefault();
-    handleSubmit(state);
+    handleSubmit();
   };
 
   return {
     reset: () => setState(getInitialState(inputs)),
     state: { ...state },
     Form() {
-      return Form({ inputs, title, onSubmit, formName, state, setState });
+      return Form({ inputs, title, onSubmit, formName });
     }
   };
 }
@@ -26,10 +23,10 @@ function Form({
   title,
   onSubmit,
   formName,
-  state,
-  setState,
-  problemMessages
 }) {
+
+  const [ state, setState ] = useState(getInitialState(inputs));
+  const [ problemMessages, setProblemMessages ] = useState([]);
 
   return (
     <form id={formName} onSubmit={onSubmit}>

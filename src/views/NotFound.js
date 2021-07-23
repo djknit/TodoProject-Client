@@ -9,3 +9,5 @@ function NotFound({ isSignedIn }) {
     </>
   );
 }
+
+export default NotFound;

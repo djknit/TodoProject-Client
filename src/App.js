@@ -1,11 +1,11 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import './App.css';
 import AppFooter from './components/AppFooter';
 import CreateAccount from './views/CreateAccount';
 import LandingPage from './views/LandingPage';
-import TodosPage from './views/TodosPage';
-import UpdateAccount from './views/UpdateAccount';
+import MainApp from './views/MainApp';
+import NotFound from './views/NotFound';
 
 
 const FOOTER_HEIGHT = '3rem';
@@ -16,23 +16,19 @@ function App() {
 
   const [isSignedIn, setIsSignedIn] = useState(false);
 
+  useEffect(() => {
+    // test authentication and redirect to dashboard if logged in
+  }, []);
+
   return (
     <>
       <div className="App container" style={CONTAINER_STYLE}>
         <Router>
           <Switch>
-            <Route
-              path="/app"
-              render={props => (
-                <Switch>
-                  <Route path="/todos" component={TodosPage} />
-                  <Route path="/edit-account" component={UpdateAccount} />
-                </Switch>
-              )}
-            />
-            <Route exact path="/" component={LandingPage} {...props} />
-            <Route path="/new-user" component={CreateAccount} {...props} />
-            <Route  />
+            <Route path="/app" component={MainApp} />
+            <Route exact path="/" component={LandingPage} />
+            <Route path="/new-user" component={CreateAccount} />
+            <Route component={NotFound} />
           </Switch>
         </Router>
       </div>

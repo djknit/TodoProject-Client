@@ -7,7 +7,11 @@ ABOUT THIS FILE:
 * * * * * * * * * * * * * * * * * * */
 
 import { useState } from 'react';
-import { Switch } from 'react-router';
+import { Switch, Route } from 'react-router';
+import TodosPage from './TodosPage';
+import UpdateAccount from './UpdateAccount';
+import Navbar from '../components/Navbar';
+import NotFound from './NotFound';
 
 function MainApp({}) {
 
@@ -18,10 +22,18 @@ function MainApp({}) {
 
   return (
     <>
+      <Navbar />
       <Switch>
         <Route path="/todos" component={TodosPage} />
         <Route path="/edit-account" component={UpdateAccount} />
+        <Route
+          render={props => (
+            <NotFound {...props} isSignedIn />
+          )}
+        />
       </Switch>
     </>
   );
 }
+
+export default MainApp;
