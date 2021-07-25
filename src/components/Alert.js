@@ -5,17 +5,19 @@ function Alert({
   messages
 }) {
 
+  // if (!messages || messages.length === 0) return null;
+
   let divClass = `alert alert-${theme} show`;
   if (dismissible) divClass += ' alert-dismissible fade';
 
-  return (messages && messages.length > 0 ) && (
+  return (
     <div className={divClass} role="alert">
-      {messages.map(message => (
+      {messages && messages.map(message => (
         <p key={message}>{message}</p>
       ))}
       {dismissible && (
-        <button type="button" className="close" data-dismiss="alert" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
+        <button type="button" className="btn-close" data-bs-dismiss="alert" aria-label="Close">
+          {/* <span aria-hidden="true">&times;</span> */}
         </button>
       )}
       {children}

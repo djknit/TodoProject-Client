@@ -7,4 +7,4 @@ function FormInputProps(name, type, label, placeholder, helpText) {
   return this;
 }
 
-export default FormInputProps;
+export { FormInputProps };
