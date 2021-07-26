@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import './App.css';
 import AppFooter from './components/AppFooter';
+import { UserInfo } from './util/stateModels';
 import CreateAccount from './views/CreateAccount';
 import LandingPage from './views/LandingPage';
 import MainApp from './views/MainApp';
@@ -14,7 +15,7 @@ const CONTAINER_STYLE = { minHeight: `calc(100vh - ${FOOTER_HEIGHT})` };
 
 function App() {
 
-  const [isSignedIn, setIsSignedIn] = useState(false);
+  // const [isSignedIn, setIsSignedIn] = useState(false);
 
   useEffect(() => {
     // test authentication and redirect to dashboard if logged in

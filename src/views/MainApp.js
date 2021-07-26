@@ -6,26 +6,41 @@ ABOUT THIS FILE:
     (React Router "Switch" statement is used to configure subroutes.)
 * * * * * * * * * * * * * * * * * * */
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Switch, Route } from 'react-router';
 import TodosPage from './TodosPage';
 import UpdateAccount from './UpdateAccount';
 import Navbar from '../components/Navbar';
 import NotFound from './NotFound';
+import { registerUnauthHandler } from '../util';
 
-function MainApp({}) {
+function MainApp({ history }) {
 
-  const [username, setUsername] = useState(null);
-  const [firstName, setFirstName] = useState(null);
-  const [lastName, setLastName] = useState(null);
+  const [userInfo, setUserInfo] = useState(null);
   const [todoItems, setTodoItems] = useState(null);
+
+  const goHome = () => history.push('/');
+
+  useEffect(() => {
+    registerUnauthHandler(goHome);
+  }, []);
 
   return (
     <>
       <Navbar />
       <Switch>
-        <Route path="/todos" component={TodosPage} />
-        <Route path="/edit-account" component={UpdateAccount} />
+        <Route
+          path="/todos"
+          render={props => (
+            <TodosPage {...props} {...{ userInfo, todoItems, setTodoItems }} />
+          )}
+        />
+        <Route
+          path="/edit-account"
+          render={props => (
+            <UpdateAccount {...props} {...{ userInfo, setUserInfo }} />
+          )}
+        />
         <Route
           render={props => (
             <NotFound {...props} isSignedIn />

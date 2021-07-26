@@ -1,6 +1,7 @@
+import { useEffect } from 'react';
 import Alert from '../components/Alert';
 import Form from '../components/Form';
-import { FormInputProps } from '../util';
+import { FormInputProps, unauthApi, userApi } from '../util';
 import './LandingPage.css';
 
 const loginInputs =  [
@@ -8,7 +9,16 @@ const loginInputs =  [
   new FormInputProps('password', 'password', 'Password', 'Type your password...')
 ];
 
-function LandingPage({  }) {
+function LandingPage({ history }) {
+
+  const goToUserPage = () => history.push('/app/todos');
+
+  useEffect(() => {
+    userApi.getCurrentUser()
+      .then(goToUserPage) // if no exception thrown, user is already logged in
+      .catch(e => {}); // exception is expected
+  }, [])
+
   return (
     <>
       <Alert theme="light" dismissible={false}> 
@@ -20,11 +30,8 @@ function LandingPage({  }) {
       <Form
         title="Sign In"
         inputs={loginInputs}
-        submit={formData => {
-          // validate?
-          // submit (call api)
-          // update front-end and reset form and redirect to user page or show error message
-        }}
+        submit={unauthApi.login}
+        handleSuccess={goToUserPage}
         formName="login-form"
       />
     </>

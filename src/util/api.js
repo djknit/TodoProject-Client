@@ -1,26 +1,22 @@
 import axios from 'axios';
 import { deleteToken, getAuthHeader, saveToken } from './jwt';
 
-// need: generic api calls
-// base path(s)
-
-// error/bad result status handling
-
-// question: how is the front-end data updated once the server has responded following a successful operation?
-  // ^ answer: promise returned by api util method is resolved w/ relavent data
-
+/****************************************************************************************/
+/* CONFIG ******************************************************************/
 let baseUrl = (process.env.BASE_URL || '/');
 if (baseUrl[baseUrl.length - 1] !== '/') baseUrl += '/';
 baseUrl += 'api';
 
 const noAuthAxios = axios.create({ baseURL: baseUrl });
-function makeAuthAxiosInstance() {
+function makeAuthAxiosInstance() { // make new axios instance each time in case jwt changes, so header gets correct version token
   return axios.create({
     baseURL: baseUrl,
     headers: getAuthHeader()
   });
 }
 
+/****************************************************************************************/
+/* API CALLS (As methods divided into objects by category) ******************/
 const unauthApi = {
   login({ username, password }) {
     return noAuthAxios.post('/authenticate', { username, password })
@@ -42,8 +38,7 @@ const userApi = {
     return makeAuthAxiosInstance()
       .put(userSubpath, { username, password, firstName, lastName });
   },
-  logout() { // <- this method s pretty pointless right now
-    // (not really API function. just need to delete jwt from session storage and redirect to login page.)
+  logout() { // (not really API function, but related)
     deleteToken();
   },
 };
@@ -76,4 +71,49 @@ const todoApi = {
   }
 };
 
-export { unauthApi, userApi, todoApi };
+/****************************************************************************************/
+/* RESPONSE PROCESSING (1st step in chain) **********************************/
+let _handleJwtAuthFailure;
+function registerUnauthHandler(__handleAuthFail) {
+  _handleJwtAuthFailure = __handleAuthFail;
+}
+
+// Add .catch() calls to the end of promises returned from api calls.
+  // (This is just the first step in the chain and shouldn't affect how the methods are used.)
+[unauthApi, userApi, todoApi].forEach(apiUtilObj => {
+  const isUnrestricted = apiUtilObj === unauthApi;
+  for (const methodName in apiUtilObj) {
+    apiUtilObj[methodName] = addStandardErrResProcessor(apiUtilObj[methodName], isUnrestricted);
+  }
+});
+
+function addStandardErrResProcessor(method, isUnrestricted) {
+  // take promise object returned by api call and add some processing to promise chain with a ".catch()" before returning it
+  return function (...args) {
+    const result = method(...args)
+      .catch(e => {
+        const resData = (e && e.response && e.response.data) || {};
+        const message = (
+          resData.message ||
+          (resData.messages && resData.messages[0]) ||
+          'An unknown problem has occured.'
+        );
+        const messages = resData.messages || [message];
+        const status = e && e.response && e.response.status;
+        if (status >= 400 && status < 500) messages.push('Please try again.');
+        else messages.push('Please try reloading the page or try again later.');
+        throw Object.assign(new Error(message), resData, { messages, status });
+      });
+    return isUnrestricted ? result : result.catch(catchUnauthorized);
+  }
+}
+function catchUnauthorized(err) {
+  const status = err && (err.status || (err.response && err.response.status));
+  if (status === 401 || status === 403) {
+    if (_handleJwtAuthFailure) _handleJwtAuthFailure();
+    err.is401 = true;
+    throw err;
+  }
+}
+
+export { unauthApi, userApi, todoApi, registerUnauthHandler };
