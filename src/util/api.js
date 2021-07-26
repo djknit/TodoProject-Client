@@ -21,7 +21,7 @@ const unauthApi = {
   login({ username, password }) {
     return noAuthAxios.post('/authenticate', { username, password })
       .then(res => {
-        saveToken(res.jwt);
+        saveToken(res.data.jwt);
       });
   },
   createUser({ username, password, firstName, lastName }) {
@@ -78,8 +78,6 @@ function registerUnauthHandler(__handleAuthFail) {
   _handleJwtAuthFailure = __handleAuthFail;
 }
 
-// Add .catch() calls to the end of promises returned from api calls.
-  // (This is just the first step in the chain and shouldn't affect how the methods are used.)
 [unauthApi, userApi, todoApi].forEach(apiUtilObj => {
   const isUnrestricted = apiUtilObj === unauthApi;
   for (const methodName in apiUtilObj) {
@@ -89,6 +87,7 @@ function registerUnauthHandler(__handleAuthFail) {
 
 function addStandardErrResProcessor(method, isUnrestricted) {
   // take promise object returned by api call and add some processing to promise chain with a ".catch()" before returning it
+    // (This is just the first step in the chain and shouldn't affect how the methods are used.)
   return function (...args) {
     const result = method(...args)
       .catch(e => {
@@ -107,6 +106,7 @@ function addStandardErrResProcessor(method, isUnrestricted) {
     return isUnrestricted ? result : result.catch(catchUnauthorized);
   }
 }
+
 function catchUnauthorized(err) {
   const status = err && (err.status || (err.response && err.response.status));
   if (status === 401 || status === 403) {
@@ -116,4 +116,6 @@ function catchUnauthorized(err) {
   }
 }
 
+/****************************************************************************************/
+/* EXPORTS *******************************************************************/
 export { unauthApi, userApi, todoApi, registerUnauthHandler };

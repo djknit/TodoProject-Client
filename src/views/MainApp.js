@@ -12,7 +12,7 @@ import TodosPage from './TodosPage';
 import UpdateAccount from './UpdateAccount';
 import Navbar from '../components/Navbar';
 import NotFound from './NotFound';
-import { registerUnauthHandler } from '../util';
+import { registerUnauthHandler, userApi } from '../util';
 
 function MainApp({ history }) {
 
@@ -23,6 +23,17 @@ function MainApp({ history }) {
 
   useEffect(() => {
     registerUnauthHandler(goHome);
+    userApi.getCurrentUser()
+      .then(result =>{
+        console.log('GOT CURRENT USER: ', result)
+        setUserInfo(result);
+      })
+      .catch(err => {
+        console.log('FAIL GET CURRENT USER: ', err)
+        goHome();
+      }
+
+      );
   }, []);
 
   return (
