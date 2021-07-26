@@ -76,7 +76,6 @@ function Form({
 export default Form;
 
 
-
 function getInitialInputValues(inputsInfo) {
   let inputValues = {};
   inputsInfo.forEach(({ name, initialValue = '' }) => {
@@ -84,19 +83,3 @@ function getInitialInputValues(inputsInfo) {
   });
   return inputValues;
 }
-
-// function getErrorMessages(formError = {}) {
-//   return [
-//     ...(
-//       (formError.messages) ||
-//       (formError.message && [formError.message]) || 
-//       (formError.status !== 500 && ([
-//         'Your submission was rejected due to invalid input.',
-//         'Please try again.'
-//       ])) || ([
-//         'An unknown problem occured when submitting you input.',
-//         'Please try reloading the page and trying again.'
-//       ])
-//     )
-//   ];
-// }

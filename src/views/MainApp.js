@@ -2,7 +2,7 @@
 ABOUT THIS FILE:
   This React component is the view shown when the user is signed in.
   All parts of the app except for the login and create-account forms will use this page.
-  This page will show the navbar w/ user menu and then the rest of the page will change depending on the page subpath.
+  This page will always show the navbar w/ user menu, but the rest of the page will change depending on the page subpath.
     (React Router "Switch" statement is used to configure subroutes.)
 * * * * * * * * * * * * * * * * * * */
 
@@ -13,27 +13,26 @@ import UpdateAccount from './UpdateAccount';
 import Navbar from '../components/Navbar';
 import NotFound from './NotFound';
 import { registerUnauthHandler, userApi } from '../util';
+import { UserInfo } from '../util/stateModels';
 
-function MainApp({ history }) {
+function MainApp({ history, match }) {
+
+  const getSubpagePath = subpath => `${match.path}/${subpath}`;
 
   const [userInfo, setUserInfo] = useState(null);
   const [todoItems, setTodoItems] = useState(null);
+  console.log(userInfo)
 
   const goHome = () => history.push('/');
 
   useEffect(() => {
     registerUnauthHandler(goHome);
     userApi.getCurrentUser()
-      .then(result =>{
-        console.log('GOT CURRENT USER: ', result)
-        setUserInfo(result);
+      .then(result => {
+        if (!result) return;
+        setUserInfo(new UserInfo(result.data));
       })
-      .catch(err => {
-        console.log('FAIL GET CURRENT USER: ', err)
-        goHome();
-      }
-
-      );
+      .catch(e => {});
   }, []);
 
   return (
@@ -41,13 +40,13 @@ function MainApp({ history }) {
       <Navbar />
       <Switch>
         <Route
-          path="/todos"
+          path={getSubpagePath('todos')}
           render={props => (
             <TodosPage {...props} {...{ userInfo, todoItems, setTodoItems }} />
           )}
         />
         <Route
-          path="/edit-account"
+          path={getSubpagePath('edit-account')}
           render={props => (
             <UpdateAccount {...props} {...{ userInfo, setUserInfo }} />
           )}

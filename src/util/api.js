@@ -74,7 +74,7 @@ const todoApi = {
 /****************************************************************************************/
 /* RESPONSE PROCESSING (1st step in chain) **********************************/
 let _handleJwtAuthFailure;
-function registerUnauthHandler(__handleAuthFail) {
+function registerUnauthHandler(__handleAuthFail) { // method to redirect to login is registered here by a component able to perform redirect w/ access to the history prop
   _handleJwtAuthFailure = __handleAuthFail;
 }
 

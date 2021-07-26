@@ -8,15 +8,15 @@ function Navbar({
 }) {
 
   return (
-    <nav className="navbar navbar-light bg-teal">
+    <nav className="navbar navbar-expand-lg navbar-light bg-teal">
       <div className="container">
 
-        <a className="navbar-brand" href="#">Todo App</a>
+        <span className="navbar-brand">Todo App</span>
         <button
           className="navbar-toggler"
           type="button"
-          data-toggle="collapse"
-          data-target="#navbar-collapse"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbar-collapse"
           aria-controls="navbar-collapse"
           aria-expanded="false"
           aria-label="Toggle navigation"
